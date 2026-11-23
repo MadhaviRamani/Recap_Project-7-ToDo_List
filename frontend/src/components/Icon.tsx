@@ -1,4 +1,4 @@
-export type IconName = "edit" | "delete" | "save" | "cancel";
+export type IconName = "edit" | "delete" | "save" | "cancel" | "drag";
 
 type IconProps = {
   name: IconName;
@@ -16,6 +16,15 @@ const paths: Record<IconName, string[]> = {
   ],
   save: ["M20 6 9 17l-5-5"],
   cancel: ["M18 6 6 18", "M6 6l12 12"],
+  // 6 dots, 2 rows of 3: a very short line with round ends is drawn as a dot.
+  drag: [
+    "M6 9h.01",
+    "M12 9h.01",
+    "M18 9h.01",
+    "M6 15h.01",
+    "M12 15h.01",
+    "M18 15h.01",
+  ],
 };
 
 // Decorative only: the button around it carries the accessible name.
@@ -28,7 +37,8 @@ export default function Icon({ name }: IconProps) {
       height="18"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      // Thicker strokes for the dots, so they are big enough to see.
+      strokeWidth={name === "drag" ? 3.5 : 2}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

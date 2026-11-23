@@ -6,6 +6,9 @@ const todoSchema = new Schema({
   title: { type: String, required: true, trim: true },
   // `required`: a PUT has to send `done`. POST still works without it, the default comes first.
   done: { type: Boolean, required: true, default: false },
+  // The place in the list (0 = top). Internal only: the API does not send it.
+  // Todos created before this field existed have none: they sort first, by creation.
+  position: { type: Number },
 });
 
 type TodoDocument = HydratedDocument<InferSchemaType<typeof todoSchema>>;

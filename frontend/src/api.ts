@@ -89,6 +89,18 @@ export async function updateTodo(todo: Todo): Promise<Todo> {
   return response.json() as Promise<Todo>;
 }
 
+/** Saves a new order: the ids of the shown todos, top first. The 204 answer has no body. Throws on an error. */
+export async function reorderTodos(ids: string[]): Promise<void> {
+  const response = await request("/todos/order", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids }),
+  });
+  if (!response.ok) {
+    return throwApiError(response);
+  }
+}
+
 /** Deletes a todo. The 204 answer has no body, so it is not parsed. Throws on an error. */
 export async function deleteTodo(id: string): Promise<void> {
   const response = await request(`/todos/${id}`, { method: "DELETE" });

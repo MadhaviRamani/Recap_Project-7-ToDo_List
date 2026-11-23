@@ -103,6 +103,56 @@ button:disabled {
   border-bottom: 1px solid #d4d4d8;
 }
 
+/* The 6-dot drag handle: hidden until the mouse is over the todo or the handle has the keyboard focus. */
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  color: #a1a1aa;
+  cursor: grab;
+  opacity: 0;
+}
+
+.todo-item:hover .drag-handle,
+.drag-handle:focus-visible {
+  opacity: 1;
+}
+
+.drag-handle:hover {
+  color: #3f3f46;
+  background: #e4e4e7;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-handle:focus-visible {
+  outline: 2px solid #18181b;
+  outline-offset: 2px;
+}
+
+/* The todo being dragged stays in place, faded: the browser shows a copy under the mouse. */
+.todo-item.dragging {
+  opacity: 0.4;
+}
+
+/* Where the dragged todo will land, the list opens a gap. */
+.todo-item {
+  transition: margin 150ms ease;
+}
+
+.todo-item.drop-before {
+  margin-top: 2.5rem;
+}
+
+.todo-item.drop-after {
+  margin-bottom: 2.5rem;
+}
+
 /* The error of one todo takes its own row under the todo. */
 .todo-item-error {
   flex-basis: 100%;

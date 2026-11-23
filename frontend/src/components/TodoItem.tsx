@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useSWRConfig } from "swr";
 
-import { deleteTodo, updateTodo } from "../api";
+import { deleteTodo, getErrorMessage, updateTodo } from "../api";
 import type { Todo } from "../types";
 
 type TodoItemProps = {
@@ -12,20 +12,29 @@ export default function TodoItem({ todo }: TodoItemProps) {
   const { mutate } = useSWRConfig();
   const [isEditing, setIsEditing] = useState(false);
   const [draftTitle, setDraftTitle] = useState(todo.title);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleToggle() {
-    // PUT replaces the whole todo: send the current title with the new done.
-    await updateTodo({ ...todo, done: !todo.done });
-    await mutate("/todos");
+    setError(null);
+    try {
+      // PUT replaces the whole todo: send the current title with the new done.
+      await updateTodo({ ...todo, done: !todo.done });
+      await mutate("/todos");
+    } catch (caught) {
+      // The list is not reloaded, so the checkbox keeps its old state.
+      setError(getErrorMessage(caught));
+    }
   }
 
   function handleEdit() {
     setDraftTitle(todo.title);
+    setError(null);
     setIsEditing(true);
   }
 
   function handleCancel() {
     setDraftTitle(todo.title);
+    setError(null);
     setIsEditing(false);
   }
 
@@ -36,16 +45,33 @@ export default function TodoItem({ todo }: TodoItemProps) {
     if (title === "") {
       return;
     }
-    // PUT replaces the whole todo: send the new title with the current done.
-    await updateTodo({ ...todo, title });
-    await mutate("/todos");
-    setIsEditing(false);
+    setError(null);
+    try {
+      // PUT replaces the whole todo: send the new title with the current done.
+      await updateTodo({ ...todo, title });
+      await mutate("/todos");
+      setIsEditing(false);
+    } catch (caught) {
+      // Stay in edit mode: the typed text is kept.
+      setError(getErrorMessage(caught));
+    }
   }
 
   async function handleDelete() {
-    await deleteTodo(todo.id);
-    await mutate("/todos");
+    setError(null);
+    try {
+      await deleteTodo(todo.id);
+      await mutate("/todos");
+    } catch (caught) {
+      setError(getErrorMessage(caught));
+    }
   }
+
+  const errorMessage = error && (
+    <p role="alert" className="todo-item-error">
+      {error}
+    </p>
+  );
 
   if (isEditing) {
     const inputId = `edit-todo-${todo.id}`;
@@ -68,6 +94,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
             Cancel
           </button>
         </form>
+        {errorMessage}
       </li>
     );
   }
@@ -84,6 +111,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
       <button type="button" onClick={handleDelete}>
         Delete
       </button>
+      {errorMessage}
     </li>
   );
 }

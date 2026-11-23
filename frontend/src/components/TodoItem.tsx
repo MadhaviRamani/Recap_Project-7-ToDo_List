@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useSWRConfig } from "swr";
 
-import { updateTodo } from "../api";
+import { deleteTodo, updateTodo } from "../api";
 import type { Todo } from "../types";
 
 type TodoItemProps = {
@@ -42,6 +42,11 @@ export default function TodoItem({ todo }: TodoItemProps) {
     setIsEditing(false);
   }
 
+  async function handleDelete() {
+    await deleteTodo(todo.id);
+    await mutate("/todos");
+  }
+
   if (isEditing) {
     const inputId = `edit-todo-${todo.id}`;
     return (
@@ -75,6 +80,9 @@ export default function TodoItem({ todo }: TodoItemProps) {
       </label>
       <button type="button" onClick={handleEdit}>
         Edit
+      </button>
+      <button type="button" onClick={handleDelete}>
+        Delete
       </button>
     </li>
   );

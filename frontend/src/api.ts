@@ -45,3 +45,11 @@ export async function updateTodo(todo: Todo): Promise<Todo> {
   }
   return response.json() as Promise<Todo>;
 }
+
+/** Deletes a todo. The 204 answer has no body, so it is not parsed. Throws on an error. */
+export async function deleteTodo(id: string): Promise<void> {
+  const response = await fetch(`${API_URL}/todos/${id}`, { method: "DELETE" });
+  if (!response.ok) {
+    return throwApiError(response);
+  }
+}

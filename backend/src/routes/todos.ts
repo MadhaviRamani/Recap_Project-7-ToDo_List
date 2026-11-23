@@ -19,3 +19,19 @@ todosRouter.post("/", async (request, response) => {
   const todo = await TodoModel.create({ title: request.body?.title });
   response.status(201).json(toTodo(todo));
 });
+
+// PUT /api/todos/:id -> 200 with the updated todo, 404 for an unknown id.
+// An invalid id like "abc" throws a CastError: errorHandler answers 404.
+todosRouter.put("/:id", async (request, response) => {
+  const todo = await TodoModel.findById(request.params.id);
+  if (!todo) {
+    response.status(404).json({ error: "Todo not found" });
+    return;
+  }
+  // PUT replaces both fields. save() checks the whole todo against the schema:
+  // a missing or empty title or a missing done throws a ValidationError, errorHandler answers 400.
+  todo.title = request.body?.title;
+  todo.done = request.body?.done;
+  await todo.save();
+  response.json(toTodo(todo));
+});

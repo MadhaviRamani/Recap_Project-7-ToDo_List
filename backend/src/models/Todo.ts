@@ -4,7 +4,8 @@ import type { Todo } from "../types";
 
 const todoSchema = new Schema({
   title: { type: String, required: true, trim: true },
-  done: { type: Boolean, default: false },
+  // `required`: a PUT has to send `done`. POST still works without it, the default comes first.
+  done: { type: Boolean, required: true, default: false },
 });
 
 type TodoDocument = HydratedDocument<InferSchemaType<typeof todoSchema>>;

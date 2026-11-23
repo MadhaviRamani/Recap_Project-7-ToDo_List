@@ -52,9 +52,22 @@ button:disabled {
 .todo-item {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.5rem 0;
   border-bottom: 1px solid #d4d4d8;
+}
+
+/* The error of one todo takes its own row under the todo. */
+.todo-item-error {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.list-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .todo-title {

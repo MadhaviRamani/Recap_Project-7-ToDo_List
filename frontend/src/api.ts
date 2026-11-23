@@ -5,24 +5,48 @@ export const API_URL = "http://localhost:3001/api";
 
 // All functions that talk to the API live here, so that components never call `fetch` themselves.
 
-/** Fetcher for `useSWR`: the key is the path after /api, e.g. "/todos". */
-export async function fetcher<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`);
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+/**
+ * Calls the API. When the backend is down, `fetch` throws a TypeError like "Failed to fetch":
+ * turn it into a message the user understands.
+ */
+async function request(path: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(`${API_URL}${path}`, init);
+  } catch {
+    throw new Error("Cannot reach the server. Is the backend running?");
   }
-  return response.json() as Promise<T>;
 }
 
 /** Throws an Error with the API's `{ "error": "..." }` message. */
 async function throwApiError(response: Response): Promise<never> {
-  const body = (await response.json()) as { error?: string };
-  throw new Error(body.error ?? `Request failed with status ${response.status}`);
+  const fallback = `Request failed with status ${response.status}`;
+  let message = fallback;
+  try {
+    const body = (await response.json()) as { error?: string };
+    message = body.error ?? fallback;
+  } catch {
+    // The body is not JSON: keep the fallback message.
+  }
+  throw new Error(message);
+}
+
+/** Turns anything a failed call threw into a message for the UI. */
+export function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : "Something went wrong";
+}
+
+/** Fetcher for `useSWR`: the key is the path after /api, e.g. "/todos". */
+export async function fetcher<T>(path: string): Promise<T> {
+  const response = await request(path);
+  if (!response.ok) {
+    return throwApiError(response);
+  }
+  return response.json() as Promise<T>;
 }
 
 /** Creates a todo. Throws an Error with the API's message when the request fails. */
 export async function createTodo(title: string): Promise<Todo> {
-  const response = await fetch(`${API_URL}/todos`, {
+  const response = await request("/todos", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title }),
@@ -35,7 +59,7 @@ export async function createTodo(title: string): Promise<Todo> {
 
 /** Replaces a todo: always sends both `title` and `done`. Throws on an error. */
 export async function updateTodo(todo: Todo): Promise<Todo> {
-  const response = await fetch(`${API_URL}/todos/${todo.id}`, {
+  const response = await request(`/todos/${todo.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title: todo.title, done: todo.done }),
@@ -48,7 +72,7 @@ export async function updateTodo(todo: Todo): Promise<Todo> {
 
 /** Deletes a todo. The 204 answer has no body, so it is not parsed. Throws on an error. */
 export async function deleteTodo(id: string): Promise<void> {
-  const response = await fetch(`${API_URL}/todos/${id}`, { method: "DELETE" });
+  const response = await request(`/todos/${id}`, { method: "DELETE" });
   if (!response.ok) {
     return throwApiError(response);
   }

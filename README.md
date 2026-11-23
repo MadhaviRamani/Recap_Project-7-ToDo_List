@@ -1,5 +1,84 @@
 # Recap Project 7: Todo App, Full Stack
 
+A todo app with an Express 5 API and MongoDB in `backend/`, and a React app in `frontend/`. You can see, add, tick off, edit and delete todos.
+
+## Getting Started
+
+### What you need
+
+- Node.js 22 or newer (`node -v`)
+- A MongoDB database: [MongoDB Atlas](https://www.mongodb.com/atlas) (free tier) or MongoDB installed locally
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/MadhaviRamani/Recap_Project-7-ToDo_List.git
+cd Recap_Project-7-ToDo_List
+cd backend && npm i
+cd ../frontend && npm i
+cd ..
+```
+
+### 2. Create `backend/.env`
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Open `backend/.env` and set `MONGODB_URI` to your connection string. Use the database name `todos`:
+
+- Atlas: `mongodb+srv://<user>:<password>@<cluster-host>/todos?retryWrites=true&w=majority`
+- Local: `mongodb://127.0.0.1:27017/todos`
+
+`PORT` stays `3001`. **Never commit `backend/.env`** (it is in `.gitignore`) and never paste the connection string into a prompt, an issue or a pull request.
+
+### 3. Start the backend and the frontend
+
+Use two terminals:
+
+```bash
+# Terminal 1
+cd backend
+npm run dev    # prints "Connected to MongoDB ..." and "API running on http://localhost:3001"
+```
+
+```bash
+# Terminal 2
+cd frontend
+npm run dev    # serves the app on http://localhost:5173
+```
+
+Stop either one with `Ctrl + C`.
+
+### 4. Open it
+
+- The app: http://localhost:5173
+- The API health check: http://localhost:3001/api/health answers `{ "status": "ok" }`
+- The API is described in [`docs/api-contract.md`](docs/api-contract.md).
+
+### Checks
+
+```bash
+cd backend && npm run typecheck
+cd frontend && npm run check && npm run build
+```
+
+### Troubleshooting
+
+- **The backend stops at start or says "connection refused":** check `MONGODB_URI` in `backend/.env`, and in Atlas check "Network Access" (your IP address may have changed). A password with special characters must be URL-encoded.
+- **The app says "Cannot reach the server":** the backend is not running. Start it and press "Try again".
+- **`blocked by CORS policy` in the browser console:** the backend is not running, or the app does not run on `http://localhost:5173`.
+
+## Adding an Owner to Each Todo (Recap Project 8)
+
+_Draft: replace with your own words._
+
+In the backend, I would add an `owner` field (the id of a user) to the schema in `backend/src/models/Todo.ts`, and an auth middleware in `backend/src/app.ts` before the todos router that finds the current user from a token. Every route in `backend/src/routes/todos.ts` would then only find, update and delete todos with `owner` equal to the current user and set it when it creates one, so the todo of another user answers 404. In the frontend, the one `request()` helper in `frontend/src/api.ts` would send the token with every call, and the SWR key would include the user, so that each user loads only their own list.
+
+---
+
+## The Assignment
+
 In this recap project, you build a **todo app** with a **backend** (Express, MongoDB with mongoose) and a **frontend** (React). Users can see, add, tick off, edit and delete todos, and the todos are stored in a database.
 
 The app is small on purpose. The point is that you connect the three parts you learned so far: **React talks to Express, and Express talks to MongoDB.** Build it with Claude Code, as you learned in the AI sessions: plan first, work in small steps and read everything the agent writes.

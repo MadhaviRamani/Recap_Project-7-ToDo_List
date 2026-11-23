@@ -64,6 +64,16 @@ button:disabled {
   gap: 0.5rem;
 }
 
+.todo-edit-form {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.todo-edit-form input {
+  flex: 1;
+}
+
 .todo-title.done {
   text-decoration: line-through;
   color: #71717a;

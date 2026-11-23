@@ -35,6 +35,25 @@ export function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : "Something went wrong";
 }
 
+/** Which todos the list shows. */
+export type Filter = "all" | "open" | "done";
+
+/** The SWR key (path after /api) for a filter: every filter has its own request. */
+export function todosKey(filter: Filter): string {
+  if (filter === "open") {
+    return "/todos?done=false";
+  }
+  if (filter === "done") {
+    return "/todos?done=true";
+  }
+  return "/todos";
+}
+
+/** Matches the SWR keys of every todos list, so `mutate(isTodosKey)` reloads all filters. */
+export function isTodosKey(key: unknown): boolean {
+  return typeof key === "string" && key.startsWith("/todos");
+}
+
 /** Fetcher for `useSWR`: the key is the path after /api, e.g. "/todos". */
 export async function fetcher<T>(path: string): Promise<T> {
   const response = await request(path);

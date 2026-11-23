@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useSWRConfig } from "swr";
 
-import { deleteTodo, getErrorMessage, updateTodo } from "../api";
+import { deleteTodo, getErrorMessage, isTodosKey, updateTodo } from "../api";
 import type { Todo } from "../types";
 
 type TodoItemProps = {
@@ -19,7 +19,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
     try {
       // PUT replaces the whole todo: send the current title with the new done.
       await updateTodo({ ...todo, done: !todo.done });
-      await mutate("/todos");
+      await mutate(isTodosKey);
     } catch (caught) {
       // The list is not reloaded, so the checkbox keeps its old state.
       setError(getErrorMessage(caught));
@@ -49,7 +49,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
     try {
       // PUT replaces the whole todo: send the new title with the current done.
       await updateTodo({ ...todo, title });
-      await mutate("/todos");
+      await mutate(isTodosKey);
       setIsEditing(false);
     } catch (caught) {
       // Stay in edit mode: the typed text is kept.
@@ -61,7 +61,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
     setError(null);
     try {
       await deleteTodo(todo.id);
-      await mutate("/todos");
+      await mutate(isTodosKey);
     } catch (caught) {
       setError(getErrorMessage(caught));
     }

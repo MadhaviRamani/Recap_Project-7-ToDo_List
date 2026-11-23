@@ -6,9 +6,21 @@ export const todosRouter = Router();
 
 // The router is mounted on /api/todos in app.ts. The contract is in docs/api-contract.md.
 
-// GET /api/todos -> 200 with the list of todos
-todosRouter.get("/", async (_request, response) => {
-  const todos = await TodoModel.find();
+// GET /api/todos -> 200 with the list of todos.
+// ?done=true only the done ones, ?done=false only the open ones, without `done` all of them.
+// Any other value of `done` -> 400.
+todosRouter.get("/", async (request, response) => {
+  const { done } = request.query;
+  if (done === undefined) {
+    const todos = await TodoModel.find();
+    response.json(todos.map(toTodo));
+    return;
+  }
+  if (done !== "true" && done !== "false") {
+    response.status(400).json({ error: "done must be true or false" });
+    return;
+  }
+  const todos = await TodoModel.find({ done: done === "true" });
   response.json(todos.map(toTodo));
 });
 

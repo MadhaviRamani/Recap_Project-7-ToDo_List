@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useSWRConfig } from "swr";
 
-import { createTodo, getErrorMessage } from "../api";
+import { createTodo, getErrorMessage, isTodosKey } from "../api";
 
 export default function TodoForm() {
   const [title, setTitle] = useState("");
@@ -20,8 +20,8 @@ export default function TodoForm() {
     try {
       await createTodo(title);
       setTitle("");
-      // Tell SWR to load the list again, so the new todo shows up.
-      await mutate("/todos");
+      // Tell SWR to load every todos list (all filters) again, so the new todo shows up.
+      await mutate(isTodosKey);
     } catch (caught) {
       // Keep the typed title and the list as they are, show what went wrong.
       setError(getErrorMessage(caught));

@@ -1,17 +1,28 @@
 import useSWR from "swr";
 
-import { fetcher, getErrorMessage } from "../api";
+import { fetcher, getErrorMessage, todosKey, type Filter } from "../api";
 import type { Todo } from "../types";
 import TodoItem from "./TodoItem";
 
-export default function TodoList() {
+const EMPTY_MESSAGES: Record<Filter, string> = {
+  all: "No todos yet. Add your first todo above!",
+  open: "No open todos. Well done!",
+  done: "No done todos yet.",
+};
+
+type TodoListProps = {
+  filter: Filter;
+};
+
+export default function TodoList({ filter }: TodoListProps) {
+  // The filter is part of the key: the API filters, every filter has its own request.
   const {
     data: todos,
     error,
     isLoading,
     isValidating,
     mutate,
-  } = useSWR<Todo[]>("/todos", fetcher);
+  } = useSWR<Todo[]>(todosKey(filter), fetcher);
 
   // The list could not be loaded (e.g. the backend is down): show why and let the user retry.
   if (error && !todos) {
@@ -30,7 +41,7 @@ export default function TodoList() {
   }
 
   if (todos.length === 0) {
-    return <p>No todos yet. Add your first todo above!</p>;
+    return <p>{EMPTY_MESSAGES[filter]}</p>;
   }
 
   return (

@@ -15,18 +15,33 @@ A response contains exactly these three fields: no `_id` and no `__v`.
 | Method and path         | Body                  | Success                  | Errors                                               |
 | ----------------------- | --------------------- | ------------------------ | ---------------------------------------------------- |
 | `GET /api/health`       |                       | 200 `{ "status": "ok" }` |                                                      |
-| `GET /api/todos`        |                       | 200 `Todo[]`             |                                                      |
+| `GET /api/todos`        |                       | 200 `Todo[]`             | 400 `{ "error": "<message>" }`                       |
 | `POST /api/todos`       | `{ "title": "..." }`  | 201 `Todo`               | 400 `{ "error": "<message>" }`                       |
 | `PUT /api/todos/:id`    | `{ "title", "done" }` | 200 `Todo`               | 400 `{ "error": "<message>" }`, 404 `Todo not found` |
 | `DELETE /api/todos/:id` |                       | 204, no body             | 404 `{ "error": "Todo not found" }`                  |
 | any other route         |                       |                          | 404 `{ "error": "Not found" }`                       |
 
+- `GET /api/todos` takes the optional query parameter `done`: `?done=true` returns only the done todos, `?done=false` only the open ones. Without `done`, all todos are returned. Any other value gives 400 `{ "error": "done must be true or false" }`.
 - `POST` creates a todo with `done: false`. The title is trimmed. A missing or empty title gives 400.
 - `PUT` replaces `title` and `done`. Always send both, also when you only change one of them.
 - A body that is not valid JSON gives 400. An `id` that is not a valid ObjectId gives 404.
 - All errors look like `{ "error": "<message>" }`. An unexpected error gives 500 `{ "error": "Internal server error" }` without details.
 
 ## Examples
+
+```http
+GET /api/todos?done=true
+
+200
+[{ "id": "6aff79b9cd3147d2599d2f45", "title": "Buy oat milk", "done": true }]
+```
+
+```http
+GET /api/todos?done=yes
+
+400
+{ "error": "done must be true or false" }
+```
 
 ```http
 POST /api/todos

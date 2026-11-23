@@ -44,6 +44,19 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.todo-filter {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* The active filter: dark button, so it is visible which one is selected. */
+.todo-filter button.active {
+  background: #18181b;
+  border-color: #18181b;
+  color: white;
+}
+
 .todo-list {
   list-style: none;
   padding: 0;

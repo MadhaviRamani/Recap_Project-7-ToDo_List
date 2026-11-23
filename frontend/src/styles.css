@@ -44,6 +44,38 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Square buttons that show only an icon (Edit, Delete, Save, Cancel). */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: #3f3f46;
+}
+
+.icon-button:hover:not(:disabled) {
+  background: #e4e4e7;
+}
+
+.icon-button:focus-visible {
+  outline: 2px solid #18181b;
+  outline-offset: 2px;
+}
+
+.icon-button-danger:hover:not(:disabled) {
+  color: #b91c1c;
+  border-color: #b91c1c;
+  background: #fef2f2;
+}
+
+.icon-button-save:hover:not(:disabled) {
+  color: #15803d;
+  border-color: #15803d;
+  background: #f0fdf4;
+}
+
 .todo-filter {
   display: flex;
   gap: 0.5rem;

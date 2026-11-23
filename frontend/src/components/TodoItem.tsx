@@ -3,6 +3,7 @@ import { useSWRConfig } from "swr";
 
 import { deleteTodo, getErrorMessage, isTodosKey, updateTodo } from "../api";
 import type { Todo } from "../types";
+import Icon from "./Icon";
 
 type TodoItemProps = {
   todo: Todo;
@@ -87,11 +88,23 @@ export default function TodoItem({ todo }: TodoItemProps) {
             onChange={(event) => setDraftTitle(event.target.value)}
             autoFocus
           />
-          <button type="submit" disabled={draftTitle.trim() === ""}>
-            Save
+          <button
+            type="submit"
+            className="icon-button icon-button-save"
+            aria-label="Save"
+            title="Save"
+            disabled={draftTitle.trim() === ""}
+          >
+            <Icon name="save" />
           </button>
-          <button type="button" onClick={handleCancel}>
-            Cancel
+          <button
+            type="button"
+            className="icon-button"
+            aria-label="Cancel"
+            title="Cancel"
+            onClick={handleCancel}
+          >
+            <Icon name="cancel" />
           </button>
         </form>
         {errorMessage}
@@ -105,11 +118,23 @@ export default function TodoItem({ todo }: TodoItemProps) {
         <input type="checkbox" checked={todo.done} onChange={handleToggle} />
         {todo.title}
       </label>
-      <button type="button" onClick={handleEdit}>
-        Edit
+      <button
+        type="button"
+        className="icon-button"
+        aria-label="Edit"
+        title="Edit"
+        onClick={handleEdit}
+      >
+        <Icon name="edit" />
       </button>
-      <button type="button" onClick={handleDelete}>
-        Delete
+      <button
+        type="button"
+        className="icon-button icon-button-danger"
+        aria-label="Delete"
+        title="Delete"
+        onClick={handleDelete}
+      >
+        <Icon name="delete" />
       </button>
       {errorMessage}
     </li>

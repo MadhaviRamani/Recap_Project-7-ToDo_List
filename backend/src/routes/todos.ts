@@ -35,3 +35,14 @@ todosRouter.put("/:id", async (request, response) => {
   await todo.save();
   response.json(toTodo(todo));
 });
+
+// DELETE /api/todos/:id -> 204 without a body, 404 for an unknown id (also when deleted twice).
+// An invalid id like "abc" throws a CastError: errorHandler answers 404.
+todosRouter.delete("/:id", async (request, response) => {
+  const todo = await TodoModel.findByIdAndDelete(request.params.id);
+  if (!todo) {
+    response.status(404).json({ error: "Todo not found" });
+    return;
+  }
+  response.status(204).end();
+});

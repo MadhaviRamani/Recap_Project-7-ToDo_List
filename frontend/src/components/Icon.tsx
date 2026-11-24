@@ -16,14 +16,14 @@ const paths: Record<IconName, string[]> = {
   ],
   save: ["M20 6 9 17l-5-5"],
   cancel: ["M18 6 6 18", "M6 6l12 12"],
-  // 6 dots, 2 rows of 3: a very short line with round ends is drawn as a dot.
+  // 6 dots, 2 columns of 3: a very short line with round ends is drawn as a dot.
   drag: [
-    "M6 9h.01",
-    "M12 9h.01",
-    "M18 9h.01",
-    "M6 15h.01",
-    "M12 15h.01",
-    "M18 15h.01",
+    "M9 6h.01",
+    "M9 12h.01",
+    "M9 18h.01",
+    "M15 6h.01",
+    "M15 12h.01",
+    "M15 18h.01",
   ],
 };
 

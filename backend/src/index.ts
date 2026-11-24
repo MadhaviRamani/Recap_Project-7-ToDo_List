@@ -1,5 +1,6 @@
-import { app } from "./app";
+// db first: it loads .env, and app.ts reads CORS_ORIGIN when it is imported.
 import { connectToDatabase } from "./db";
+import { app } from "./app";
 
 const PORT = Number(process.env.PORT ?? 3001);
 

@@ -40,13 +40,17 @@ export default function TodoForm() {
           id="new-todo"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
-          placeholder="What do you have to do?"
+          placeholder="What do you need to do?"
         />
         <button type="submit" disabled={isSubmitting || title.trim() === ""}>
           {isSubmitting ? "Adding…" : "Add"}
         </button>
       </form>
-      {error && <p role="alert">{error}</p>}
+      {error && (
+        <p role="alert" className="form-error">
+          {error}
+        </p>
+      )}
     </>
   );
 }

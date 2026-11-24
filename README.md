@@ -2,6 +2,8 @@
 
 A todo app with an Express 5 API and MongoDB in `backend/`, and a React app in `frontend/`. You can see, add, tick off, edit and delete todos.
 
+The design of the app is inspired by Nirwan Luitel.
+
 ## Getting Started
 
 ### What you need

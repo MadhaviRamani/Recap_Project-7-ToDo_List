@@ -27,6 +27,13 @@ A full-stack todo app: an Express 5 API with MongoDB in `backend/`, a React app 
 - The API follows `docs/api-contract.md`: paths, status codes, field names (`id`, `title`, `done`) and the error format `{ "error": "..." }`.
 - Routes call the mongoose model directly. No extra layers.
 - **Never read, print, log or commit `backend/.env`.** It holds the connection string. `.env.example` has placeholders only.
-- CORS is set up in `backend/src/app.ts` for `http://localhost:5173`. Do not change it and do not use `*`.
+- CORS is set up in `backend/src/app.ts`: it allows the origin in `CORS_ORIGIN`, defaulting to `http://localhost:5173`. Do not change it and do not use `*`.
 - Use async/await. Name request parameters `request` and `response`. No `any`.
-- Only do what the current issue asks for. No authentication, no tests, no deployment yet.
+- Only do what the current issue asks for. No authentication, no tests.
+
+## Deployment (Render)
+
+- Backend: Web Service, root `backend`, build `npm install`, start `npm start` (`tsx` is a regular dependency for this). Env: `MONGODB_URI`, `CORS_ORIGIN` (the frontend's URL, no trailing `/`). Render sets `PORT`.
+- Frontend: Static Site, root `frontend`, build `npm install && npm run build`, publish `dist`. Env: `VITE_API_URL` = backend URL **ending in `/api`**. It is baked in at build time, so redeploy after changing it.
+- Atlas Network Access allows `0.0.0.0/0`, because Render has no fixed IPs.
+- Pushing to `main` redeploys both.

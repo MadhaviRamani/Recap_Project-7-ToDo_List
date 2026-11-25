@@ -1,7 +1,7 @@
 import type { Todo } from "./types";
 
 // The backend allows requests from http://localhost:5173 (CORS), so the frontend can call it directly.
-export const API_URL = import.meta.env.VITE_API_URL;
+export const API_URL = "http://localhost:3001/api";
 
 // All functions that talk to the API live here, so that components never call `fetch` themselves.
 

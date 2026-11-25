@@ -6,10 +6,8 @@ import { todosRouter } from "./routes/todos";
 
 export const app = express();
 
-// The React app runs on another origin, so the browser needs CORS headers.
-// Locally that is http://localhost:5173, on Render the address of the Static Site (set CORS_ORIGIN).
-// Exactly one origin, never "*".
-app.use(cors({ origin: process.env.CORS_ORIGIN}));
+// The React app runs on another origin (http://localhost:5173), so the browser needs CORS headers.
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
 app.get("/api/health", (_request, response) => {
